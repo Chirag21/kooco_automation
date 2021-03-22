@@ -2,10 +2,11 @@ package kooco;
 
 import java.util.List;
 
-import utils.ConfigHelper;
+import enums.ConfigProperties;
+import enums.Locators;
+import utils.PropertyUtils;
 import utils.ExcelUtils;
 import utils.KoocoUtils;
-import utils.Locators;
 
 public class Runner extends KoocoUtils {
 
@@ -51,7 +52,7 @@ public class Runner extends KoocoUtils {
 			}
 		}
 
-		if ("Y".equalsIgnoreCase(ConfigHelper.getProperty("kooco.save.file"))) {
+		if ("Y".equalsIgnoreCase(PropertyUtils.getProperty(ConfigProperties.KOOCO_SAVE_FILE.name().toLowerCase()))) {
 			// set ordersGrabbed for excel
 			ordersGrabbed = getTotalOrdersGrabbedToday();
 			driver.get(getBalancePageurl());

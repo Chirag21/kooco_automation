@@ -16,6 +16,8 @@ import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
+import enums.ConfigProperties;
+
 public class ExcelUtils {
 	private static FileOutputStream fos;
 	private static XSSFWorkbook workbook;
@@ -29,7 +31,7 @@ public class ExcelUtils {
 	}
 
 	public static String getFilePath() {
-		return ConfigHelper.getProperty("kooco.filepath");
+		return PropertyUtils.getProperty(ConfigProperties.KOOCO_FILEPATH.name().toLowerCase());
 	}
 
 	public static void createWorkbook() throws IOException {
@@ -71,9 +73,10 @@ public class ExcelUtils {
 			return;
 		}
 
-		if ("Y".equalsIgnoreCase(ConfigHelper.getProperty("kooco.take.backup"))) {
+		if ("Y".equalsIgnoreCase(PropertyUtils.getProperty(ConfigProperties.KOOCO_TAKE_BACKUP.name().toLowerCase()))) {
 			try {
-				Files.copy(oldFile, Path.of(".//kooco_" + date + "_" + ConfigHelper.getProperty("kooco.username") + ".xlsx"),
+				Files.copy(oldFile, Path.of(".//kooco_" + date + "_"
+						+ PropertyUtils.getProperty(ConfigProperties.KOOCO_USERNAME.name().toLowerCase()) + ".xlsx"),
 						StandardCopyOption.REPLACE_EXISTING);
 				System.out.println("kooco.xlsx backup done.");
 			} catch (IOException e1) {

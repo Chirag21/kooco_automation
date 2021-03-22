@@ -5,6 +5,7 @@ import java.math.MathContext;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Objects;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
@@ -12,10 +13,11 @@ import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
+import enums.ConfigProperties;
+import enums.Locators;
 import io.github.bonigarcia.wdm.WebDriverManager;
 
 public class KoocoUtils {
-	private static final int TOTAL_AVAILABLE_ORDERS = 30;
 	private static String popupText;
 	private static String balancePageurl;
 
@@ -29,11 +31,11 @@ public class KoocoUtils {
 	public static void setup() {
 		WebDriverManager.chromedriver().setup();
 		ChromeOptions options = new ChromeOptions();
-		int[] resolution = ConfigHelper.getScreenSize(); // returns width and height of screen resolution
+		int[] resolution = PropertyUtils.getScreenSize(); // returns width and height of screen resolution
 		options.addArguments("--window-size=" + resolution[0] + "," + resolution[1], "--headless");
-		driver = new ChromeDriver(options);
-		balancePageurl = ConfigHelper.getProperty("kooco.balance.page");
-		driver.get(ConfigHelper.getProperty("kooco.url"));
+		driver = Objects.requireNonNull(new ChromeDriver(options), "driver is null!!!");
+		balancePageurl = PropertyUtils.getProperty(ConfigProperties.KOOCO_BALANCE_PAGE_URL.name().toLowerCase());
+		driver.get(PropertyUtils.getProperty(ConfigProperties.KOOCO_URL.name().toLowerCase()));
 		wait = new WebDriverWait(driver, 20000);
 	}
 
@@ -43,8 +45,9 @@ public class KoocoUtils {
 
 	public static void login() {
 		driver.findElement(By.cssSelector(Locators.USER_NAME.toString()))
-				.sendKeys(ConfigHelper.getProperty("kooco.username"));
-		driver.findElement(By.cssSelector(Locators.PASSWORD.toString())).sendKeys(ConfigHelper.getProperty("kooco.password"));
+				.sendKeys(PropertyUtils.getProperty(ConfigProperties.KOOCO_USERNAME.name().toLowerCase()));
+		driver.findElement(By.cssSelector(Locators.PASSWORD.toString()))
+				.sendKeys(PropertyUtils.getProperty(ConfigProperties.KOOCO_PASSWORD.name().toLowerCase()));
 		halt(1000);
 		driver.findElement(By.cssSelector(Locators.LOGIN_BTN.toString())).click();
 	}
@@ -74,10 +77,10 @@ public class KoocoUtils {
 	public static void clickOnKoocoLogo() {
 		driver.findElement(By.cssSelector(Locators.KOOCO_LOGO.toString())).click();
 	}
-	
+
 	public static void clickOnRespectiveLevel() {
-		String level = ConfigHelper.getProperty("kooco.level");
-		switch (level) {
+		String level = PropertyUtils.getProperty(ConfigProperties.KOOCO_LEVEL.name().toLowerCase());
+		switch (Objects.requireNonNull(level, "level returned null!!!")) {
 		case "LV1":
 			driver.findElement(By.cssSelector(Locators.LEVEL_ONE.toString())).click();
 			System.out.println("Clicked on LEVEL 1");
@@ -114,7 +117,9 @@ public class KoocoUtils {
 	public static int getAvailableOrdersCount() {
 		String availableOrdersCount = driver.findElement(By.cssSelector(Locators.TOTAL_ORDERS_GRABBED_TODAY.toString()))
 				.getText().trim();
-		return (TOTAL_AVAILABLE_ORDERS - Integer.parseInt(availableOrdersCount));
+		int totalOrderCount = Integer
+				.parseInt(PropertyUtils.getProperty(ConfigProperties.KOOCO_TOTAL_ORDER_COUNT.name().toLowerCase()));
+		return (totalOrderCount - Integer.parseInt(availableOrdersCount));
 	}
 
 	public static String getTotalOrdersGrabbedToday() {
@@ -160,36 +165,40 @@ public class KoocoUtils {
 	}
 
 	public static String getOrderProfitToday() {
-		return driver.findElement(By.cssSelector(Locators.ORDER_PROFIT_TODAY.toString())).getText().trim().replace("₹", "");
+		return driver.findElement(By.cssSelector(Locators.ORDER_PROFIT_TODAY.toString())).getText().trim().replace("₹",
+				"");
 	}
 
 	public static String getTotalMoney() {
-		return driver.findElement(By.cssSelector(Locators.TOTAL_MONEY.toString())).getText().trim().replace("₹", "").replace("₹", "");
+		return driver.findElement(By.cssSelector(Locators.TOTAL_MONEY.toString())).getText().trim().replace("₹", "")
+				.replace("₹", "");
 	}
 
 	public static String getTodayTeamCommission() {
-		return driver.findElement(By.cssSelector(Locators.TODAY_TEAM_COMMISSION.toString())).getText().trim().replace("₹", "");
+		return driver.findElement(By.cssSelector(Locators.TODAY_TEAM_COMMISSION.toString())).getText().trim()
+				.replace("₹", "");
 	}
 
 	public static String getTotalTeamCommission() {
-		return driver.findElement(By.cssSelector(Locators.TOTAL_TEAM_COMMISSION.toString())).getText().trim().replace("₹", "");
+		return driver.findElement(By.cssSelector(Locators.TOTAL_TEAM_COMMISSION.toString())).getText().trim()
+				.replace("₹", "");
 	}
 
 	public static List<String> getDataForExcel() {
 		List<String> excelData = new ArrayList<>();
-		String todayProfit = null;
+		StringBuffer todayProfit = new StringBuffer();
 		if (ExcelUtils.getYesterdayRevenue() != "0") {
 			BigDecimal todayRevenue = new BigDecimal(getTodayRevenue().trim().replace("₹", ""));
-			BigDecimal yesterdaYRevenue = new BigDecimal(ExcelUtils.getYesterdayRevenue());
-			todayProfit = String.valueOf(todayRevenue.subtract(yesterdaYRevenue, MathContext.DECIMAL32).doubleValue());
-		}
-		else {
-			todayProfit = getTodayRevenue().trim().replace("₹", "");
+			BigDecimal yesterdayRevenue = new BigDecimal(ExcelUtils.getYesterdayRevenue());
+			todayProfit = todayProfit.append(
+					String.valueOf(todayRevenue.subtract(yesterdayRevenue, MathContext.DECIMAL32).doubleValue()));
+		} else {
+			todayProfit = todayProfit.append(getTodayRevenue().trim().replace("₹", ""));
 		}
 		excelData.add(Calendar.getInstance().getTime().toString());
 		excelData.add(getAvailableForWithdrawal());
 		excelData.add(getTodayRevenue());
-		excelData.add(todayProfit);
+		excelData.add(todayProfit.toString());
 		excelData.add(getTotalRevenue());
 		excelData.add(getOrderProfitToday());
 		excelData.add(getTotalMoney());

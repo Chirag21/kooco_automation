@@ -3,32 +3,34 @@ package utils;
 import java.awt.Toolkit;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.Objects;
 import java.util.Properties;
 
-public class ConfigHelper {
+public class PropertyUtils {
 	private static Properties prop;
 	private static FileInputStream fis;
 
-	private ConfigHelper() {
+	private PropertyUtils() {
 	}
 
 	public static String getProperty(String key) {
 		prop = new Properties();
 		try {
 			fis = new FileInputStream(".//src//main//resources//config.properties");
-			prop.load(fis);
+			if (Objects.nonNull(fis) || Objects.nonNull(prop))
+				prop.load(fis);
 		} catch (IOException e) {
 			System.err.println("Cannot read config.properties");
 			e.printStackTrace();
+		} finally {
+			try {
+				Objects.requireNonNull(fis, "fis is null!!").close();
+			} catch (IOException e) {
+				System.err.println("Cannot close input stream");
+				e.printStackTrace();
+			}
 		}
-		try {
-			fis.close();
-		} catch (IOException e) {
-			System.err.println("Cannot close input stream");
-			e.printStackTrace();
-		}
-
-		return prop.getProperty(key).trim();
+		return prop.getProperty(Objects.requireNonNull(key, "key is null!!!")).trim();
 
 	}
 
