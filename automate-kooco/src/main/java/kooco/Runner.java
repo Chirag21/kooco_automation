@@ -43,8 +43,7 @@ public class Runner extends KoocoUtils {
 							"All orders are already grabbed. Available orders count : " + availableOrdersCount);
 
 					break;
-				}
-				if (frozenOrdersCount != 0) {
+				}else if (frozenOrdersCount != 0) {
 					System.out.println("Orders got frozen. Frozen orders count : " + frozenOrdersCount);
 					break;
 				}
@@ -57,7 +56,7 @@ public class Runner extends KoocoUtils {
 			ordersGrabbed = getTotalOrdersGrabbedToday();
 			driver.get(getBalancePageurl());
 			waitForElementToBeVisible(Locators.AVAILABLE_FOR_WITHDRAWAL.toString());
-			halt(1000);
+			halt(2000);
 			ExcelUtils.createOrBackup();
 			List<String> data = getDataForExcel();
 			ExcelUtils.writeToExcel(data);

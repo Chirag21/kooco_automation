@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Objects;
+
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
@@ -46,9 +47,11 @@ public class KoocoUtils {
 	public static void login() {
 		driver.findElement(By.cssSelector(Locators.USER_NAME.toString()))
 				.sendKeys(PropertyUtils.getProperty(ConfigProperties.KOOCO_USERNAME.name().toLowerCase()));
+
 		driver.findElement(By.cssSelector(Locators.PASSWORD.toString()))
 				.sendKeys(PropertyUtils.getProperty(ConfigProperties.KOOCO_PASSWORD.name().toLowerCase()));
 		halt(1000);
+
 		driver.findElement(By.cssSelector(Locators.LOGIN_BTN.toString())).click();
 	}
 
@@ -187,7 +190,7 @@ public class KoocoUtils {
 	public static List<String> getDataForExcel() {
 		List<String> excelData = new ArrayList<>();
 		StringBuffer todayProfit = new StringBuffer();
-		if (ExcelUtils.getYesterdayRevenue() != "0") {
+		if (!ExcelUtils.getYesterdayRevenue().equals("0")) {
 			BigDecimal todayRevenue = new BigDecimal(getTodayRevenue().trim().replace("₹", ""));
 			BigDecimal yesterdayRevenue = new BigDecimal(ExcelUtils.getYesterdayRevenue());
 			todayProfit = todayProfit.append(

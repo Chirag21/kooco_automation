@@ -21,11 +21,11 @@ import enums.ConfigProperties;
 public class ExcelUtils {
 	private static FileOutputStream fos;
 	private static XSSFWorkbook workbook;
-	private static XSSFSheet sheet;
-	private static XSSFRow row;
+	// private static XSSFSheet sheet;
+	// private static XSSFRow row;
 	private static FileInputStream fis;
-	private static String date = DateFormat.getDateInstance().format(new Date()).replaceAll(":", "-")
-			.replaceAll("[,\s]", "");
+	private static String date = DateFormat.getDateInstance().format(new Date()).replace(":", "-").replaceAll("[,\s]",
+			"");
 
 	private ExcelUtils() {
 	}
@@ -37,8 +37,8 @@ public class ExcelUtils {
 	public static void createWorkbook() throws IOException {
 		fos = new FileOutputStream(getFilePath());
 		workbook = new XSSFWorkbook();
-		sheet = workbook.createSheet("Sheet_1");
-		row = sheet.createRow(0);
+		XSSFSheet sheet = workbook.createSheet("Sheet_1");
+		XSSFRow row = sheet.createRow(0);
 		row.createCell(0, CellType.STRING).setCellValue("DATE");
 		row.createCell(1, CellType.STRING).setCellValue("CURRENT_BALANCE");
 		row.createCell(2, CellType.STRING).setCellValue("TODAY_REVENUE");
@@ -115,8 +115,7 @@ public class ExcelUtils {
 		if (workbook.getSheetAt(0).getLastRowNum() != 0) {
 			int lastRowNumber = workbook.getSheetAt(0).getLastRowNum();
 			XSSFRow row = workbook.getSheetAt(0).getRow(lastRowNumber);
-			String yesterdayProfit = row.getCell(2).getStringCellValue().trim().replace("₹", "");
-			return yesterdayProfit;
+			return row.getCell(2).getStringCellValue().trim().replace("₹", "");
 		}
 
 		return "0";
