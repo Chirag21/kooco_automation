@@ -6,6 +6,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.text.DateFormat;
 import java.util.Date;
@@ -60,7 +61,7 @@ public class ExcelUtils {
 	}
 
 	public static void createOrBackup() {
-		Path oldFile = Path.of(getFilePath());
+		Path oldFile = Paths.get(getFilePath());
 		if (!Files.exists(oldFile)) {
 			try {
 				// create new excel file
@@ -75,7 +76,7 @@ public class ExcelUtils {
 
 		if ("Y".equalsIgnoreCase(PropertyUtils.getProperty(ConfigProperties.KOOCO_TAKE_BACKUP.name().toLowerCase()))) {
 			try {
-				Files.copy(oldFile, Path.of(".//kooco_" + date + "_"
+				Files.copy(oldFile, Paths.get(".//kooco_" + date + "_"
 						+ PropertyUtils.getProperty(ConfigProperties.KOOCO_USERNAME.name().toLowerCase()) + ".xlsx"),
 						StandardCopyOption.REPLACE_EXISTING);
 				System.out.println("kooco.xlsx backup done.");
