@@ -20,9 +20,11 @@ public class Runner extends KoocoUtils {
 		// remove only first popup which appears after login
 		waitForElementToBeVisible(Locators.POPUP_CONTENT.toString());
 		removePopup();
+		halt(1500);
 		clickOnRespectiveLevel();
+		halt(1500);
+		waitForElementToBeClickable(Locators.START_TO_GRAB_ORDER_BTN.toString());
 		while (true) {
-			waitForElementToBeClickable(Locators.START_TO_GRAB_ORDER_BTN.toString());
 			System.out.println("On main page");
 			halt(1500);
 			availableOrdersCount = getAvailableOrdersCount();
@@ -48,6 +50,7 @@ public class Runner extends KoocoUtils {
 					break;
 				}
 				System.out.println("Unknown Error!!!");
+				break;
 			}
 		}
 

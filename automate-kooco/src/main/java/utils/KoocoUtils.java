@@ -34,6 +34,7 @@ public class KoocoUtils {
 		ChromeOptions options = new ChromeOptions();
 		int[] resolution = PropertyUtils.getScreenSize(); // returns width and height of screen resolution
 		options.addArguments("--window-size=" + resolution[0] + "," + resolution[1], "--headless");
+		// options.addArguments("--start-maximized");//, "--headless");
 		driver = Objects.requireNonNull(new ChromeDriver(options), "driver is null!!!");
 		balancePageurl = PropertyUtils.getProperty(ConfigProperties.KOOCO_BALANCE_PAGE_URL.name().toLowerCase());
 		driver.get(PropertyUtils.getProperty(ConfigProperties.KOOCO_URL.name().toLowerCase()));
