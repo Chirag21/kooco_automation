@@ -113,14 +113,12 @@ public class KoocoUtils {
 	}
 
 	public static int getFrozenOrdersCount() {
-		String frozenOrdersCount = driver.findElement(By.cssSelector(Locators.FROZEN_ORDERS.toString())).getText()
-				.trim();
+		String frozenOrdersCount = driver.findElement(By.cssSelector(Locators.FROZEN_ORDERS.toString())).getText().trim();
 		return Integer.parseInt(frozenOrdersCount);
 	}
 
 	public static int getAvailableOrdersCount() {
-		String availableOrdersCount = driver.findElement(By.cssSelector(Locators.TOTAL_ORDERS_GRABBED_TODAY.toString()))
-				.getText().trim();
+		String availableOrdersCount = driver.findElement(By.cssSelector(Locators.TOTAL_ORDERS_GRABBED_TODAY.toString())).getText().trim();
 		int totalOrderCount = Integer
 				.parseInt(PropertyUtils.getProperty(ConfigProperties.KOOCO_TOTAL_ORDER_COUNT.name().toLowerCase()));
 		return (totalOrderCount - Integer.parseInt(availableOrdersCount));
@@ -169,35 +167,31 @@ public class KoocoUtils {
 	}
 
 	public static String getOrderProfitToday() {
-		return driver.findElement(By.cssSelector(Locators.ORDER_PROFIT_TODAY.toString())).getText().trim().replace("₹",
-				"");
+		return driver.findElement(By.cssSelector(Locators.ORDER_PROFIT_TODAY.toString())).getText().trim().replace("₹","");
 	}
 
 	public static String getTotalMoney() {
-		return driver.findElement(By.cssSelector(Locators.TOTAL_MONEY.toString())).getText().trim().replace("₹", "")
-				.replace("₹", "");
+		return driver.findElement(By.cssSelector(Locators.TOTAL_MONEY.toString())).getText().trim().replace("₹", "");
 	}
 
 	public static String getTodayTeamCommission() {
-		return driver.findElement(By.cssSelector(Locators.TODAY_TEAM_COMMISSION.toString())).getText().trim()
-				.replace("₹", "");
+		return driver.findElement(By.cssSelector(Locators.TODAY_TEAM_COMMISSION.toString())).getText().trim().replace("₹", "");
 	}
 
 	public static String getTotalTeamCommission() {
-		return driver.findElement(By.cssSelector(Locators.TOTAL_TEAM_COMMISSION.toString())).getText().trim()
-				.replace("₹", "");
+		return driver.findElement(By.cssSelector(Locators.TOTAL_TEAM_COMMISSION.toString())).getText().trim().replace("₹", "");
 	}
 
 	public static List<String> getDataForExcel() {
 		List<String> excelData = new ArrayList<>();
 		StringBuffer todayProfit = new StringBuffer();
 		if (!ExcelUtils.getYesterdayRevenue().equals("0")) {
-			BigDecimal todayRevenue = new BigDecimal(getTodayRevenue().trim().replace("₹", ""));
+			BigDecimal todayRevenue = new BigDecimal(getTodayRevenue().trim()); // .replace("₹", ""));
 			BigDecimal yesterdayRevenue = new BigDecimal(ExcelUtils.getYesterdayRevenue());
 			todayProfit = todayProfit.append(
 					String.valueOf(todayRevenue.subtract(yesterdayRevenue, MathContext.DECIMAL32).doubleValue()));
 		} else {
-			todayProfit = todayProfit.append(getTodayRevenue().trim().replace("₹", ""));
+			todayProfit = todayProfit.append(getTodayRevenue().trim()); // .replace("₹", ""));
 		}
 		excelData.add(Calendar.getInstance().getTime().toString());
 		excelData.add(getAvailableForWithdrawal());
