@@ -59,7 +59,7 @@ public class Runner extends KoocoUtils {
 			ordersGrabbed = getTotalOrdersGrabbedToday();
 			driver.get(getBalancePageurl());
 			waitForElementToBeVisible(Locators.AVAILABLE_FOR_WITHDRAWAL.toString());
-			halt(2000);
+			halt(4000);
 			ExcelUtils.createOrBackup();
 			List<String> data = getDataForExcel();
 			ExcelUtils.writeToExcel(data);
