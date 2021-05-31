@@ -26,7 +26,7 @@ public class KoocoUtils {
 	public static WebDriver driver;
 	public static WebDriverWait wait;
 
-	protected KoocoUtils() {
+	private KoocoUtils() {
 	}
 
 	public static void setup() {
